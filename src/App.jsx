@@ -3,23 +3,36 @@ import { DIALECTS, WORD_LENGTH, MAX_GUESSES } from './lib/dialects';
 import { getWordOfDay, evaluateGuess, isWin } from './lib/gameLogic';
 import { loadStats, recordResult, loadTodayState, saveTodayState } from './lib/stats';
 import { buildShareText, shareResult } from './lib/share';
+import { useTheme } from './lib/useTheme';
 import { computeLetterStatus } from './components/Keyboard';
 import Board from './components/Board';
 import Keyboard from './components/Keyboard';
 import DialectToggle from './components/DialectToggle';
 import WordRevealCard from './components/WordRevealCard';
 import StatsModal from './components/StatsModal';
+import HowToPlayModal from './components/HowToPlayModal';
 import RojDisc from './components/RojDisc';
+import ThemeToggle from './components/ThemeToggle';
 
 const BASE = import.meta.env.BASE_URL;
+const HOW_TO_PLAY_SEEN_KEY = 'kurdle:seenHowTo';
 
 function normalize(s) {
   return s.trim().toLowerCase();
 }
 
 export default function App() {
+  const [theme, setTheme] = useTheme();
   const [dialectKey, setDialectKey] = useState('kmr');
   const dialect = DIALECTS[dialectKey];
+
+  const [showHowToPlay, setShowHowToPlay] = useState(
+    () => typeof window !== 'undefined' && !localStorage.getItem(HOW_TO_PLAY_SEEN_KEY)
+  );
+  const closeHowToPlay = useCallback(() => {
+    localStorage.setItem(HOW_TO_PLAY_SEEN_KEY, '1');
+    setShowHowToPlay(false);
+  }, []);
 
   const [wordData, setWordData] = useState(null); // { guessSet, answer, glosses, puzzleNumber }
   const [loadError, setLoadError] = useState(null);
@@ -178,13 +191,24 @@ export default function App() {
           <RojDisc size={28} className="text-roj" />
           <span className="font-display font-bold text-lg">Kurdle</span>
         </a>
-        <button
-          type="button"
-          onClick={() => setShowStats(true)}
-          className="text-sm font-semibold px-3 py-1.5 rounded-full border border-paper-border dark:border-ink-border hover:bg-paper-raised dark:hover:bg-ink-raised transition-colors"
-        >
-          Amar
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setShowHowToPlay(true)}
+            aria-label="Çawa tê lîstin?"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-paper-border dark:border-ink-border font-display font-bold text-sm hover:bg-paper-raised dark:hover:bg-ink-raised transition-colors"
+          >
+            ?
+          </button>
+          <ThemeToggle theme={theme} onChange={setTheme} />
+          <button
+            type="button"
+            onClick={() => setShowStats(true)}
+            className="text-sm font-semibold px-3 py-1.5 rounded-full border border-paper-border dark:border-ink-border hover:bg-paper-raised dark:hover:bg-ink-raised transition-colors"
+          >
+            Amar
+          </button>
+        </div>
       </header>
 
       {/* Not disabled mid-game: each dialect's progress is saved separately
@@ -243,6 +267,8 @@ export default function App() {
           shareState={shareState}
         />
       )}
+
+      {showHowToPlay && <HowToPlayModal onClose={closeHowToPlay} />}
     </div>
   );
 }
