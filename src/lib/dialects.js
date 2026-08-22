@@ -33,6 +33,11 @@ function threeRows(alphabet) {
   ];
 }
 
+// Ferheng (kurdish-tech.github.io) uses its own dialect keys for word
+// routes -- "ku"/"sor"/"zza", not Kurdle's "kmr"/"ckb"/"zza" -- see that
+// repo's src/lib/kurdishAlphabet.js DIALECTS map. Kept as an explicit
+// per-dialect field here rather than assumed, so the two repos drifting
+// independently can't silently break the cross-link.
 export const DIALECTS = {
   kmr: {
     key: 'kmr',
@@ -43,6 +48,7 @@ export const DIALECTS = {
     alphabet: KURMANCI_ALPHABET,
     keyboardRows: threeRows(KURMANCI_ALPHABET),
     wordListUrl: 'words/kmr.json',
+    ferhengKey: 'ku',
   },
   ckb: {
     key: 'ckb',
@@ -53,6 +59,7 @@ export const DIALECTS = {
     alphabet: SORANI_ALPHABET,
     keyboardRows: threeRows(SORANI_ALPHABET),
     wordListUrl: 'words/ckb.json',
+    ferhengKey: 'sor',
   },
   zza: {
     key: 'zza',
@@ -63,8 +70,19 @@ export const DIALECTS = {
     alphabet: ZAZAKI_ALPHABET,
     keyboardRows: threeRows(ZAZAKI_ALPHABET),
     wordListUrl: 'words/zza.json',
+    ferhengKey: 'zza',
   },
 };
+
+const FERHENG_BASE = 'https://kurdish-tech.github.io/';
+
+/** Matches Ferheng's own buildWordRoute() in src/lib/wordRoute.js
+ * ("/w/{dialectKey}/{word}", hash-routed) -- kept in sync by hand since
+ * these are two separate repos. */
+export function ferhengWordUrl(dialectKey, word) {
+  const ferhengKey = DIALECTS[dialectKey]?.ferhengKey ?? dialectKey;
+  return `${FERHENG_BASE}#/w/${ferhengKey}/${encodeURIComponent(word)}`;
+}
 
 export const DIALECT_ORDER = ['kmr', 'ckb', 'zza'];
 export const WORD_LENGTH = 5;
