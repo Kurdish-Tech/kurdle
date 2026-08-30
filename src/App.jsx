@@ -187,10 +187,18 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col items-center px-4 py-6 font-body">
       <header className="w-full max-w-md flex items-center justify-between mb-4">
-        <a href="https://kurdish-tech.github.io/" className="flex items-center gap-2">
-          <RojDisc size={28} className="text-roj" />
-          <span className="font-display font-bold text-lg">Kurdle</span>
-        </a>
+        <div className="flex items-center gap-3">
+          <a
+            href="https://kurdish-tech.github.io/"
+            className="flex items-center gap-1 text-xs font-semibold text-slate-light hover:text-ink dark:text-slate-dark dark:hover:text-paper transition-colors"
+          >
+            ← Ferheng
+          </a>
+          <span className="flex items-center gap-2">
+            <RojDisc size={28} className="text-roj" />
+            <span className="font-display font-bold text-lg">Kurdle</span>
+          </span>
+        </div>
         <div className="flex items-center gap-2">
           <button
             type="button"
