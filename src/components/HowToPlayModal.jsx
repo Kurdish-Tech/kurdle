@@ -66,7 +66,7 @@ const TEXT = {
 };
 
 export default function HowToPlayModal({ onClose }) {
-  const [lang, setLang] = useState('ku');
+  const [lang, setLang] = useState('ar');
   const t = TEXT[lang];
   const isAr = lang === 'ar';
 
